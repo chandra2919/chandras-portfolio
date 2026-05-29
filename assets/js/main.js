@@ -234,46 +234,6 @@ class NeuralNetwork {
 })();
 
 
-/* ══════════════════════════════════════════════════════════
-   4. TYPEWRITER EFFECT
-   Cycles through an array of role strings.
-   ══════════════════════════════════════════════════════════ */
-(function initTypewriter() {
-  const el = document.getElementById('typed-role');
-  if (!el) return;
-
-  const roles = [
-    'AI / ML Engineer',
-    'Computer Vision Developer',
-    'Full-Stack Developer',
-    'Deep Learning Enthusiast',
-    'Python Developer',
-  ];
-
-  let rIdx = 0, cIdx = 0, deleting = false;
-  const SPEED_TYPE = 80, SPEED_DEL = 45, PAUSE = 2000;
-
-  function tick() {
-    const current = roles[rIdx];
-    el.textContent = deleting
-      ? current.slice(0, cIdx--)
-      : current.slice(0, cIdx++);
-
-    let delay = deleting ? SPEED_DEL : SPEED_TYPE;
-
-    if (!deleting && cIdx > current.length) {
-      delay   = PAUSE;
-      deleting = true;
-    } else if (deleting && cIdx < 0) {
-      deleting = false;
-      rIdx     = (rIdx + 1) % roles.length;
-      cIdx     = 0;
-      delay    = 400;
-    }
-    setTimeout(tick, delay);
-  }
-  tick();
-})();
 
 
 /* ══════════════════════════════════════════════════════════
@@ -309,6 +269,28 @@ class NeuralNetwork {
   }, { threshold: 0.5 });
 
   counters.forEach(c => io.observe(c));
+})();
+
+
+/* ══════════════════════════════════════════════════════════
+   6. PAGE TRANSITIONS
+   Intercepts internal nav links and fades out before navigate.
+   ══════════════════════════════════════════════════════════ */
+(function initPageTransitions() {
+  document.addEventListener('click', e => {
+    const link = e.target.closest('a[href]');
+    if (!link) return;
+
+    const href = link.getAttribute('href');
+    /* Only handle same-origin internal .html links */
+    if (!href || href.startsWith('http') || href.startsWith('mailto')
+        || href.startsWith('tel') || href.startsWith('#')
+        || href.startsWith('javascript') || link.hasAttribute('download')) return;
+
+    e.preventDefault();
+    document.body.classList.add('page-transition-out');
+    setTimeout(() => { window.location.href = href; }, 260);
+  });
 })();
 
 
